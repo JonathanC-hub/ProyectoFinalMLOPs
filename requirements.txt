@@ -1,0 +1,9 @@
+# Paquetes esenciales para ML y MLflow
+mlflow
+scikit-learn
+pandas
+numpy
+joblib
+
+# Opcional: manejo de fechas y compatibilidad
+python-dateutil

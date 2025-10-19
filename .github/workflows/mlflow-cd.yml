@@ -1,0 +1,39 @@
+# .github/workflows/mlflow-cd.yml
+name: CD - Promoción y Despliegue de Modelo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mlflow scikit-learn pandas joblib
+
+      - name: 📂 Descargar artefactos de MLflow desde CI
+        uses: actions/download-artifact@v4
+        with:
+          name: modelo-validado
+          path: mlruns
+
+      - name: 🟢 Promocionar modelo (simulado)
+        run: |
+          echo "✅ Promoción del modelo validado a producción"
+          # Si quieres, puedes agregar comandos reales para actualizar MLflow Registry
+          # o desplegar usando mlflow models serve
+          # Ejemplo (opcional):
+          # mlflow models serve -m mlruns/<experiment_id>/<run_id>/model --port 5000
+
