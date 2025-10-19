@@ -58,7 +58,7 @@ if not os.path.exists(data_path):
     print(f"--- ERROR: No se encuentra el archivo {data_path} ---")
     sys.exit(1)
 
-df = pd.read_csv(data_path, sep=';')
+df = pd.read_csv(data_path, sep='\t')
 X = df.drop("quality", axis=1)
 y = df["quality"]
 
