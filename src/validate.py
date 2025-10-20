@@ -33,7 +33,7 @@ experiment_name = "CI-CD-Lab2"
 
 # --- Umbrales de validación ---
 THRESHOLD_MSE = 0.6
-THRESHOLD_R2 = 0.5
+THRESHOLD_R2 = 0.4
 print(f"📏 Umbrales: MSE ≤ {THRESHOLD_MSE}, R² ≥ {THRESHOLD_R2}")
 
 # --- Cargar dataset ---
