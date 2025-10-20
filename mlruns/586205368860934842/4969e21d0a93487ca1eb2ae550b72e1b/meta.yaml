@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/4969e21d0a93487ca1eb2ae550b72e1b/artifacts
+end_time: 1760968291841
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 4969e21d0a93487ca1eb2ae550b72e1b
+run_name: capable-swan-499
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760968114601
+status: 3
+tags: []
+user_id: jcortesi

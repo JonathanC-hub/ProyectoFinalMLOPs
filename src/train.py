@@ -1,105 +1,165 @@
 import os
+import sys
+import traceback
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+from pathlib import Path
+
+from sklearn.model_selection import train_test_split, GridSearchCV, KFold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
+
 import mlflow
 import mlflow.sklearn
 from mlflow.models import infer_signature
 
-# --- Configuración inicial ---
-workspace_dir = os.getcwd()
-data_path = os.path.join(workspace_dir, "data", "winequality-red.csv")
-mlruns_dir = os.path.join(workspace_dir, "mlruns")
-os.makedirs(mlruns_dir, exist_ok=True)
+# --- Configuración de entorno ---
+IS_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
-tracking_uri = f"file:///{mlruns_dir.replace(os.sep, '/')}"
+# --- Paths y MLflow ---
+if IS_GITHUB_ACTIONS:
+    # En GitHub Actions, usar rutas relativas al workspace
+    workspace_dir = Path(os.getenv("GITHUB_WORKSPACE", "."))
+else:
+    # En local, usar el directorio actual
+    workspace_dir = Path.cwd()
+
+mlruns_dir = workspace_dir / "mlruns"
+mlruns_dir.mkdir(exist_ok=True)
+
+# MLflow requiere formato específico según el OS
+if os.name == 'nt':  # Windows
+    # Usar ruta relativa simple o ./mlruns
+    tracking_uri = "./mlruns"
+else:  # Linux/Mac/GitHub Actions
+    tracking_uri = f"file://{mlruns_dir.resolve()}"
+
 mlflow.set_tracking_uri(tracking_uri)
-experiment_name = "CI-CD-Lab2"
 
-# Crear o cargar experimento
+print(f"📁 Workspace: {workspace_dir}")
+print(f"📊 MLflow URI: {tracking_uri}")
+
+experiment_name = "CI-CD-Lab2"
 experiment = mlflow.get_experiment_by_name(experiment_name)
 if experiment is None:
     experiment_id = mlflow.create_experiment(experiment_name)
+    print(f"✨ Experimento '{experiment_name}' creado")
 else:
     experiment_id = experiment.experiment_id
+    print(f"📂 Usando experimento existente: {experiment_name}")
 
 # --- Cargar dataset ---
-df = pd.read_csv(data_path, sep=',')
+data_path = workspace_dir / "data" / "winequality-red.csv"
+if not data_path.exists():
+    print(f"❌ No se encuentra {data_path}")
+    print(f"   Directorio actual: {Path.cwd()}")
+    print(f"   Archivos en workspace: {list(workspace_dir.iterdir())}")
+    sys.exit(1)
+
+print(f"📂 Cargando datos desde: {data_path}")
+df = pd.read_csv(data_path, sep=",")
+print(f"✅ Dataset cargado: {df.shape[0]} filas, {df.shape[1]} columnas")
 
 # --- Preprocesamiento ---
-# 1. Separar features y target
 X = df.drop("quality", axis=1)
 y = df["quality"]
 
-# 2. Eliminar outliers (basado en 1.5*IQR)
-Q1 = X.quantile(0.02)
-Q3 = X.quantile(0.98)
-IQR = Q3 - Q1
-mask = ~((X < (Q1 - 1.5*IQR)) | (X > (Q3 + 1.5*IQR))).any(axis=1)
+# Manejo de valores nulos
+null_count = X.isnull().sum().sum()
+if null_count > 0:
+    print(f"⚠️  Rellenando {null_count} valores nulos")
+    X.fillna(X.mean(), inplace=True)
+
+# Eliminación de outliers (Z-score > 3)
+z_scores = np.abs((X - X.mean()) / X.std())
+mask = (z_scores < 3).all(axis=1)
 X = X[mask]
-y = y[mask]
+y = y[X.index]
+print(f"🧹 Outliers eliminados: {(~mask).sum()} filas")
 
-# 3. Eliminar variables altamente correlacionadas (>0.9)
+# Eliminación de variables altamente correlacionadas (>0.9)
 corr_matrix = X.corr().abs()
-upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-to_drop = [col for col in upper.columns if any(upper[col] > 1.00)]
-X.drop(columns=to_drop, inplace=True)
+upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+to_drop = [col for col in upper_tri.columns if any(upper_tri[col] > 0.9)]
+if to_drop:
+    print(f"🔗 Variables correlacionadas eliminadas: {to_drop}")
+    X.drop(columns=to_drop, inplace=True)
 
-# 4. Escalamiento
+# Escalamiento
 scaler = StandardScaler()
 X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+print(f"📏 Features escaladas: {X_scaled.shape[1]} variables")
 
-# 5. División de datos
+# División de datos
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.2, random_state=42
 )
+print(f"📊 Train: {X_train.shape[0]} | Test: {X_test.shape[0]}")
 
-# --- GridSearch con RandomForest ---
+# --- GridSearchCV + Cross Validation ---
+print("\n🔍 Iniciando GridSearchCV...")
 param_grid = {
     "n_estimators": [100, 200, 500],
     "max_depth": [None, 10, 20],
-    "min_samples_split": [2, 5],
-    "min_samples_leaf": [1, 2]
+    "min_samples_split": [2, 5]
 }
 
+cv = KFold(n_splits=5, shuffle=True, random_state=42)
 rf = RandomForestRegressor(random_state=42)
-grid = GridSearchCV(
-    estimator=rf,
-    param_grid=param_grid,
-    cv=5,
-    scoring='r2',
-    n_jobs=-1
-)
+grid = GridSearchCV(rf, param_grid, cv=cv, scoring="r2", n_jobs=-1, verbose=1)
 grid.fit(X_train, y_train)
 
 best_model = grid.best_estimator_
-
-# --- Evaluación con cross-validation ---
-cv_scores = cross_val_score(best_model, X_train, y_train, cv=5, scoring='r2')
-mean_cv_r2 = cv_scores.mean()
 y_pred = best_model.predict(X_test)
-test_r2 = r2_score(y_test, y_pred)
-test_mse = mean_squared_error(y_test, y_pred)
 
-print(f"🔍 Mejor R² CV: {mean_cv_r2:.4f}")
-print(f"🔍 Test R²: {test_r2:.4f}, MSE: {test_mse:.4f}")
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 
-# --- Registro en MLflow ---
-with mlflow.start_run(experiment_id=experiment_id):
-    mlflow.log_params(grid.best_params_)
-    mlflow.log_metric("mean_cv_r2", mean_cv_r2)
-    mlflow.log_metric("test_r2", test_r2)
-    mlflow.log_metric("test_mse", test_mse)
-    
-    signature = infer_signature(X_train, best_model.predict(X_train))
-    mlflow.sklearn.log_model(
-        sk_model=best_model,
-        artifact_path="model",
-        signature=signature,
-        input_example=X_train.iloc[:5]
-    )
+print(f"\n{'='*50}")
+print(f"🏆 Mejores hiperparámetros: {grid.best_params_}")
+print(f"🔍 Mejor R² CV: {grid.best_score_:.4f}")
+print(f"🔍 Test R²: {r2:.4f}")
+print(f"🔍 Test MSE: {mse:.4f}")
+print(f"{'='*50}\n")
 
-print("✅ Entrenamiento completado y modelo registrado en MLflow.")
+# --- MLflow ---
+try:
+    with mlflow.start_run(experiment_id=experiment_id):
+        # Log metrics
+        mlflow.log_metric("mse", mse)
+        mlflow.log_metric("r2", r2)
+        mlflow.log_metric("best_r2_cv", grid.best_score_)
+        
+        # Log parameters
+        mlflow.log_params(grid.best_params_)
+        mlflow.log_param("test_size", 0.2)
+        mlflow.log_param("cv_folds", 5)
+        mlflow.log_param("n_features", X_train.shape[1])
+        
+        # Log model
+        signature = infer_signature(X_train, best_model.predict(X_train))
+        
+        mlflow.sklearn.log_model(
+            sk_model=best_model,
+            artifact_path="model",
+            signature=signature,
+            input_example=X_train.iloc[:5]
+        )
+        
+        run_id = mlflow.active_run().info.run_id
+        print(f"✅ Modelo registrado en MLflow (Run ID: {run_id})")
+        
+        # Guardar run_id para uso posterior (útil en CI/CD)
+        if IS_GITHUB_ACTIONS:
+            with open("run_id.txt", "w") as f:
+                f.write(run_id)
+            print(f"💾 Run ID guardado en run_id.txt")
+
+except Exception as e:
+    print(f"❌ Error al registrar en MLflow: {e}")
+    traceback.print_exc()
+    sys.exit(1)
+
+print("\n✅ Entrenamiento completado exitosamente")
+sys.exit(0)
