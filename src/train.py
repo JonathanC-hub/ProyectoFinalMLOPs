@@ -3,7 +3,8 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from mlflow.models import infer_signature
 import sys
@@ -60,17 +61,31 @@ if not os.path.exists(data_path):
 
 df = pd.read_csv(data_path, sep=',')
 
-
+# --- Preprocesamiento ---
 X = df.drop("quality", axis=1)
 y = df["quality"]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Manejo de valores nulos
+if X.isnull().sum().sum() > 0:
+    X.fillna(X.mean(), inplace=True)
+    print("--- Debug: Se llenaron valores nulos con la media ---")
+
+# Escalamiento de features
+scaler = StandardScaler()
+X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
+
+# División de datos
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 # --- Entrenamiento del modelo ---
 model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 preds = model.predict(X_test)
+
+# --- Evaluación ---
 mse = mean_squared_error(y_test, preds)
+r2 = r2_score(y_test, preds)
+print(f"🔍 MSE: {mse:.4f}, R²: {r2:.4f}")
 
 # --- MLflow Run ---
 print(f"--- Debug: Iniciando run de MLflow en Experimento ID: {experiment_id} ---")
@@ -80,7 +95,9 @@ try:
         run_id = run.info.run_id
         print(f"--- Debug: Run ID: {run_id} ---")
         
+        # Log métricas
         mlflow.log_metric("mse", mse)
+        mlflow.log_metric("r2", r2)
         
         # Inferir firma de entrada
         signature = infer_signature(X_train, model.predict(X_train))
@@ -92,9 +109,10 @@ try:
             signature=signature,
             input_example=X_train.iloc[:5]
         )
-        print(f"✅ Modelo registrado correctamente. MSE: {mse:.4f}")
+        print(f"✅ Modelo registrado correctamente. MSE: {mse:.4f}, R²: {r2:.4f}")
 
 except Exception as e:
     print(f"\n--- ERROR durante la ejecución de MLflow ---")
     traceback.print_exc()
     sys.exit(1)
+

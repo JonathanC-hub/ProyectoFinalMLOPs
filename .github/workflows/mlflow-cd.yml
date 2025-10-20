@@ -18,10 +18,7 @@ jobs:
           python-version: '3.10'
 
       - name: 📦 Instalar dependencias
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install mlflow scikit-learn pandas joblib
+        run: make install
 
       - name: 📂 Descargar artefactos de MLflow desde CI
         uses: actions/download-artifact@v4
@@ -29,11 +26,18 @@ jobs:
           name: modelo-validado
           path: mlruns
 
+      - name: 🔍 Verificar modelo descargado
+        run: |
+          if [ -d "mlruns" ]; then
+            echo "✅ Artefactos de modelo descargados correctamente."
+            ls -R mlruns
+          else
+            echo "❌ No se encontraron artefactos de modelo."
+            exit 1
+          fi
+
       - name: 🟢 Promocionar modelo (simulado)
         run: |
           echo "✅ Promoción del modelo validado a producción"
-          # Si quieres, puedes agregar comandos reales para actualizar MLflow Registry
-          # o desplegar usando mlflow models serve
-          # Ejemplo (opcional):
+          # Opcional: servir modelo localmente
           # mlflow models serve -m mlruns/<experiment_id>/<run_id>/model --port 5000
-
