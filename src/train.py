@@ -29,11 +29,16 @@ mlruns_dir = workspace_dir / "mlruns"
 mlruns_dir.mkdir(exist_ok=True)
 
 # MLflow requiere formato específico según el OS
-if os.name == 'nt':  # Windows
-    # Usar ruta relativa simple o ./mlruns
+# También verificar si ya hay una variable de entorno configurada
+if os.getenv("MLFLOW_TRACKING_URI"):
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
+    print(f"🔧 Usando MLFLOW_TRACKING_URI de variable de entorno")
+elif os.name == 'nt':  # Windows
+    # Usar ruta relativa simple
     tracking_uri = "./mlruns"
 else:  # Linux/Mac/GitHub Actions
-    tracking_uri = f"file://{mlruns_dir.resolve()}"
+    # Usar ruta relativa en lugar de absoluta para evitar problemas de permisos
+    tracking_uri = "./mlruns"
 
 mlflow.set_tracking_uri(tracking_uri)
 

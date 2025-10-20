@@ -28,7 +28,8 @@ if os.getenv("MLFLOW_TRACKING_URI"):
 elif os.name == 'nt':  # Windows
     tracking_uri = "./mlruns"
 else:  # Linux/Mac/GitHub Actions
-    tracking_uri = f"file://{mlruns_dir.resolve()}"
+    # Usar ruta relativa en lugar de absoluta para evitar problemas de permisos
+    tracking_uri = "./mlruns"
 
 mlflow.set_tracking_uri(tracking_uri)
 
@@ -39,7 +40,7 @@ experiment_name = "CI-CD-Lab2"
 
 # --- Umbrales de validación ---
 THRESHOLD_MSE = 0.6
-THRESHOLD_R2 = 0.3
+THRESHOLD_R2 = 0.5
 
 print(f"📏 Umbrales: MSE ≤ {THRESHOLD_MSE}, R² ≥ {THRESHOLD_R2}")
 
