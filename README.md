@@ -1,4 +1,4 @@
-\# Proyecto Final MLOps: Pipeline de Machine Learning con CI/CD
+\# 🚀 Proyecto Final MLOps: Pipeline de Machine Learning con CI/CD
 
 
 
@@ -10,34 +10,22 @@ Este proyecto implementa un \*\*pipeline reproducible de Machine Learning\*\* pa
 
 
 
-\## Estructura del Proyecto
+## Estructura del Proyecto
 
 
 
 mlflow-deploy/
-
 ├── data/
-
-│   └── winequality-red.csv         # Dataset externo (CSV)
-
+│ └── winequality-red.csv # Dataset externo (CSV)
 ├── src/
-
-│   ├── train.py                    # Script de entrenamiento
-
-│   └── validate.py                 # Script de validación
-
+│ ├── train.py # Script de entrenamiento
+│ └── validate.py # Script de validación
 ├── .github/workflows/
-
-│   ├── mlflow-ci.yml               # Workflow de CI
-
-│   └── mlflow-cd.yml               # Workflow de CD
-
-├── Makefile                        # Comandos automáticos
-
-├── requirements.txt                # Dependencias
-
+│ ├── mlflow-ci.yml # Workflow de CI
+│ └── mlflow-cd.yml # Workflow de CD
+├── Makefile # Comandos automáticos
+├── requirements.txt # Dependencias
 └── README.md
-
 
 
 ---
@@ -48,7 +36,7 @@ mlflow-deploy/
 
 
 
-Automatizar un \*\*pipeline completo de ML\*\* que permita:
+Automatizar un **pipeline reproducible de Machine Learning** que permita:
 
 
 
@@ -134,7 +122,7 @@ Columnas principales:
 
 | `make train`     | Ejecuta el pipeline de entrenamiento completo      |
 
-| `make validate`  | Valida el modelo usando MSE y umbral definido      |
+| `make validate`  | Valida el modelo usando MSE y R² definidos          |
 
 | `make ci`        | Ejecuta `train` + `validate`                       |
 
@@ -214,7 +202,7 @@ Archivo: `.github/workflows/mlflow-ci.yml`
 
 &nbsp; 5. Validar el modelo (`make validate`).
 
-&nbsp; 6. Subir el modelo validado como artefacto (`mlruns/\*\*/model`).
+&nbsp; 6.  Subir el modelo validado como artefacto (`mlruns/**/model`).
 
 
 
@@ -270,17 +258,14 @@ Archivo: `.github/workflows/mlflow-cd.yml`
 
 
 
-\## Evidencia
+## 🧪 Evidencia
 
+- ✅ Modelo entrenado y validado exitosamente en **GitHub Actions CI**.  
+- ✅ Artefactos subidos correctamente.  
+- ❌ El modelo no fue promovido a producción debido a no cumplir el umbral de R² ≥ 0.5.  
 
+> Ejemplo de ejecución: [GitHub Actions CI](https://github.com/JonathanC-hub/ProyectoFinalMLOPs/actions)
 
-\- Modelo entrenado y validado con éxito en GitHub Actions CI.
-
-\- Artefactos subidos y disponibles para promoción.
-
-
-
-> Ejemplo de run: \[GitHub Actions CI](https://github.com/JonathanC-hub/ProyectoFinalMLOPs/actions)
 
 
 
