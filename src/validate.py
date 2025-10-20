@@ -12,8 +12,13 @@ import sys
 THRESHOLD_MSE = 0.6   # MSE máximo aceptable
 THRESHOLD_R2 = 0.5    # R2 mínimo aceptable
 
-# --- Cargar dataset Wine (Red Wine Quality) ---
+# --- Configurar MLflow Tracking URI compatible ---
 workspace_dir = os.getcwd()
+mlruns_dir = os.path.join(workspace_dir, "mlruns").replace(os.sep, '/')
+mlflow.set_tracking_uri(f"file:///{mlruns_dir}")
+print(f"--- Debug: MLflow Tracking URI: {mlflow.get_tracking_uri()} ---")
+
+# --- Cargar dataset Wine (Red Wine Quality) ---
 data_path = os.path.join(workspace_dir, "data", "winequality-red.csv")
 if not os.path.exists(data_path):
     print(f"❌ No se encuentra el archivo {data_path}")
