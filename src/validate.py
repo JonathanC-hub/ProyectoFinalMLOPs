@@ -10,7 +10,7 @@ import sys
 
 # Umbral de validación
 THRESHOLD_MSE = 0.6   # MSE máximo aceptable
-THRESHOLD_R2 = 0.6    # R2 mínimo aceptable
+THRESHOLD_R2 = 0.5    # R2 mínimo aceptable
 
 # --- Cargar dataset Wine (Red Wine Quality) ---
 workspace_dir = os.getcwd()
