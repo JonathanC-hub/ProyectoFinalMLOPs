@@ -13,35 +13,30 @@ from sklearn.metrics import mean_squared_error, r2_score
 import mlflow
 import mlflow.sklearn
 from mlflow.models import infer_signature
+import joblib
 
 # --- Configuración de entorno ---
 IS_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 # --- Paths y MLflow ---
 if IS_GITHUB_ACTIONS:
-    # En GitHub Actions, usar rutas relativas al workspace
     workspace_dir = Path(os.getenv("GITHUB_WORKSPACE", "."))
 else:
-    # En local, usar el directorio actual
     workspace_dir = Path.cwd()
 
 mlruns_dir = workspace_dir / "mlruns"
 mlruns_dir.mkdir(exist_ok=True)
 
-# MLflow requiere formato específico según el OS
-# También verificar si ya hay una variable de entorno configurada
+# --- Configurar MLflow ---
 if os.getenv("MLFLOW_TRACKING_URI"):
     tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
     print(f"🔧 Usando MLFLOW_TRACKING_URI de variable de entorno")
 elif os.name == 'nt':  # Windows
-    # Usar ruta relativa simple
     tracking_uri = "./mlruns"
-else:  # Linux/Mac/GitHub Actions
-    # Usar ruta relativa en lugar de absoluta para evitar problemas de permisos
+else:
     tracking_uri = "./mlruns"
 
 mlflow.set_tracking_uri(tracking_uri)
-
 print(f"📁 Workspace: {workspace_dir}")
 print(f"📊 MLflow URI: {tracking_uri}")
 
@@ -58,8 +53,6 @@ else:
 data_path = workspace_dir / "data" / "winequality-red.csv"
 if not data_path.exists():
     print(f"❌ No se encuentra {data_path}")
-    print(f"   Directorio actual: {Path.cwd()}")
-    print(f"   Archivos en workspace: {list(workspace_dir.iterdir())}")
     sys.exit(1)
 
 print(f"📂 Cargando datos desde: {data_path}")
@@ -71,19 +64,17 @@ X = df.drop("quality", axis=1)
 y = df["quality"]
 
 # Manejo de valores nulos
-null_count = X.isnull().sum().sum()
-if null_count > 0:
-    print(f"⚠️  Rellenando {null_count} valores nulos")
+if X.isnull().sum().sum() > 0:
+    print(f"⚠️  Rellenando valores nulos")
     X.fillna(X.mean(), inplace=True)
 
-# Eliminación de outliers (Z-score > 3)
+# Eliminación de outliers
 z_scores = np.abs((X - X.mean()) / X.std())
 mask = (z_scores < 3).all(axis=1)
-X = X[mask]
-y = y[X.index]
+X, y = X[mask], y[mask]
 print(f"🧹 Outliers eliminados: {(~mask).sum()} filas")
 
-# Eliminación de variables altamente correlacionadas (>0.9)
+# Variables altamente correlacionadas
 corr_matrix = X.corr().abs()
 upper_tri = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
 to_drop = [col for col in upper_tri.columns if any(upper_tri[col] > 0.9)]
@@ -91,7 +82,7 @@ if to_drop:
     print(f"🔗 Variables correlacionadas eliminadas: {to_drop}")
     X.drop(columns=to_drop, inplace=True)
 
-# Escalamiento
+# Escalamiento (entrenar scaler aquí)
 scaler = StandardScaler()
 X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
 print(f"📏 Features escaladas: {X_scaled.shape[1]} variables")
@@ -128,38 +119,43 @@ print(f"🔍 Test R²: {r2:.4f}")
 print(f"🔍 Test MSE: {mse:.4f}")
 print(f"{'='*50}\n")
 
-# --- MLflow ---
+# --- Registrar en MLflow ---
 try:
-    with mlflow.start_run(experiment_id=experiment_id):
-        # Log metrics
+    with mlflow.start_run(experiment_id=experiment_id) as run:
+        run_id = run.info.run_id
+
+        # Log de métricas
         mlflow.log_metric("mse", mse)
         mlflow.log_metric("r2", r2)
         mlflow.log_metric("best_r2_cv", grid.best_score_)
-        
-        # Log parameters
+
+        # Log de parámetros
         mlflow.log_params(grid.best_params_)
         mlflow.log_param("test_size", 0.2)
         mlflow.log_param("cv_folds", 5)
         mlflow.log_param("n_features", X_train.shape[1])
-        
-        # Log model
+
+        # Log del modelo
         signature = infer_signature(X_train, best_model.predict(X_train))
-        
         mlflow.sklearn.log_model(
             sk_model=best_model,
             artifact_path="model",
             signature=signature,
             input_example=X_train.iloc[:5]
         )
-        
-        run_id = mlflow.active_run().info.run_id
-        print(f"✅ Modelo registrado en MLflow (Run ID: {run_id})")
-        
-        # Guardar run_id para uso posterior (útil en CI/CD)
+
+        # Guardar scaler
+        scaler_path = workspace_dir / "scaler.pkl"
+        joblib.dump(scaler, scaler_path)
+        mlflow.log_artifact(str(scaler_path), artifact_path="scaler")
+        print(f"✅ Scaler registrado en MLflow")
+
         if IS_GITHUB_ACTIONS:
             with open("run_id.txt", "w") as f:
                 f.write(run_id)
             print(f"💾 Run ID guardado en run_id.txt")
+
+        print(f"✅ Modelo registrado en MLflow (Run ID: {run_id})")
 
 except Exception as e:
     print(f"❌ Error al registrar en MLflow: {e}")

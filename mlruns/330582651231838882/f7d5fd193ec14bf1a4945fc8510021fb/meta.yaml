@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/330582651231838882/f7d5fd193ec14bf1a4945fc8510021fb/artifacts
+end_time: 1760971638346
+entry_point_name: ''
+experiment_id: '330582651231838882'
+lifecycle_stage: active
+run_id: f7d5fd193ec14bf1a4945fc8510021fb
+run_name: smiling-worm-843
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760971630950
+status: 3
+tags: []
+user_id: jcortesi

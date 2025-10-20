@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/330582651231838882/1e74b8c2845349abbce009e5d1bc5193/artifacts
+end_time: 1760970485082
+entry_point_name: ''
+experiment_id: '330582651231838882'
+lifecycle_stage: active
+run_id: 1e74b8c2845349abbce009e5d1bc5193
+run_name: chill-wasp-798
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760970473843
+status: 3
+tags: []
+user_id: jcortesi
