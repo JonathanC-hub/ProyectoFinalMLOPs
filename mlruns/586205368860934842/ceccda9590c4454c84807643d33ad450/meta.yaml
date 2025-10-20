@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/ceccda9590c4454c84807643d33ad450/artifacts
+end_time: 1760966775434
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: ceccda9590c4454c84807643d33ad450
+run_name: auspicious-carp-585
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760966767988
+status: 3
+tags: []
+user_id: jcortesi

@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/models/m-392f980fa94646e3977759136cdf7e04/artifacts
+creation_timestamp: 1760965407225
+experiment_id: '586205368860934842'
+last_updated_timestamp: 1760965414637
+model_id: m-392f980fa94646e3977759136cdf7e04
+model_type: null
+name: model
+source_run_id: ba66be0e8faa4169b39abfbb49286fe1
+status: 2
+status_message: null

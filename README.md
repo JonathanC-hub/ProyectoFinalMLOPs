@@ -104,6 +104,8 @@ make install
 
 Se utiliza el dataset \*\*Wine Quality - Red Wine\*\* (CSV externo).  
 
+Link: https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009?resource=download
+
 Columnas principales:
 
 

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/0d8758f5dd564031be82fcd31ab6a972/artifacts
+end_time: 1760966884945
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 0d8758f5dd564031be82fcd31ab6a972
+run_name: upbeat-hound-824
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760966880483
+status: 3
+tags: []
+user_id: jcortesi

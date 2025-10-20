@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/40511077316549069c0fe16c07850aeb/artifacts
+end_time: 1760965566724
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 40511077316549069c0fe16c07850aeb
+run_name: placid-dog-117
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965559233
+status: 3
+tags: []
+user_id: jcortesi

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/4f6fdbb5f8c941abad2395236aaa39ca/artifacts
+end_time: 1760965545934
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 4f6fdbb5f8c941abad2395236aaa39ca
+run_name: defiant-panda-567
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965538483
+status: 3
+tags: []
+user_id: jcortesi

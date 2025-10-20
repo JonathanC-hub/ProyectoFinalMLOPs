@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/e6f5f22fa9d94e4b81f144bb0fccdf4d/artifacts
+end_time: 1760965455999
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: e6f5f22fa9d94e4b81f144bb0fccdf4d
+run_name: melodic-sponge-313
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965448394
+status: 3
+tags: []
+user_id: jcortesi

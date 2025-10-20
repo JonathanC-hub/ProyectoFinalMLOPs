@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/ec0bbe5037464e7f9bd337ebd55dd3e8/artifacts
+end_time: 1760963971947
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: ec0bbe5037464e7f9bd337ebd55dd3e8
+run_name: casual-kite-161
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760963964324
+status: 3
+tags: []
+user_id: jcortesi

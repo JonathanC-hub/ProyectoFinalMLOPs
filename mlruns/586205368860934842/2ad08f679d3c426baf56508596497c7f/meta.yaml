@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/2ad08f679d3c426baf56508596497c7f/artifacts
+end_time: 1760931002616
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 2ad08f679d3c426baf56508596497c7f
+run_name: kindly-zebra-218
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760930994353
+status: 3
+tags: []
+user_id: jcortesi

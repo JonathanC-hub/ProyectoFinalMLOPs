@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/ba86e0e1daf5465198a561f2da67e936/artifacts
+end_time: 1760966347369
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: ba86e0e1daf5465198a561f2da67e936
+run_name: rumbling-kit-488
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760966340062
+status: 3
+tags: []
+user_id: jcortesi

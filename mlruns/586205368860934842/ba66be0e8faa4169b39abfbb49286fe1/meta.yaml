@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/ba66be0e8faa4169b39abfbb49286fe1/artifacts
+end_time: 1760965414647
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: ba66be0e8faa4169b39abfbb49286fe1
+run_name: sassy-conch-13
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965407123
+status: 3
+tags: []
+user_id: jcortesi

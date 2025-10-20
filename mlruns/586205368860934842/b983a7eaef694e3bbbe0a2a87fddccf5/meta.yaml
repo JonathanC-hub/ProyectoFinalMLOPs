@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/b983a7eaef694e3bbbe0a2a87fddccf5/artifacts
+end_time: 1760965683872
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: b983a7eaef694e3bbbe0a2a87fddccf5
+run_name: carefree-wren-318
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965676692
+status: 3
+tags: []
+user_id: jcortesi

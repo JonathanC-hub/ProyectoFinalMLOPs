@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/d93d9af4a6ba4839bdb693591fe4b834/artifacts
+end_time: 1760965626485
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: d93d9af4a6ba4839bdb693591fe4b834
+run_name: stylish-sheep-122
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965619293
+status: 3
+tags: []
+user_id: jcortesi

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/59c071a1a6e84881b5ce8b7269e5796f/artifacts
+end_time: 1760965517143
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 59c071a1a6e84881b5ce8b7269e5796f
+run_name: nebulous-worm-224
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760965509766
+status: 3
+tags: []
+user_id: jcortesi

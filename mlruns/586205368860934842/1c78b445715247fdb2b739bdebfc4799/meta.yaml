@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/586205368860934842/1c78b445715247fdb2b739bdebfc4799/artifacts
+end_time: 1760964775680
+entry_point_name: ''
+experiment_id: '586205368860934842'
+lifecycle_stage: active
+run_id: 1c78b445715247fdb2b739bdebfc4799
+run_name: indecisive-goat-16
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760964765476
+status: 3
+tags: []
+user_id: jcortesi
