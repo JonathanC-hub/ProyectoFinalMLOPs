@@ -1,0 +1,72 @@
+name: CI/CD para ML con MLflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ml_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v3
+      
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: 📦 Instalar dependencias
+        run: make install
+      
+      - name: 🧹 Limpiar mlruns
+        run: rm -rf ./mlruns
+      
+      - name: 🧪 Entrenar modelo
+        run: make train
+      
+      - name: ✅ Validar desempeño del modelo
+        run: make validate
+      
+      - name: 📤 Subir modelo como artefacto
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-runs
+          path: mlruns
+
+  deploy-model:
+    needs: ml_pipeline
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v3
+      
+      - name: 📂 Descargar artefactos de MLflow
+        uses: actions/download-artifact@v4
+        with:
+          name: mlflow-runs
+          path: mlruns
+      
+      - name: 🔍 Verificar modelo descargado
+        run: |
+          if [ -d "mlruns" ]; then
+            echo "✅ Artefactos de modelo descargados correctamente."
+            ls -R mlruns
+          else
+            echo "❌ No se encontraron artefactos de modelo."
+            exit 1
+          fi
+      
+      - name: 🚀 Promocionar modelo a producción
+        run: |
+          mkdir -p production_model
+          cp -r mlruns/* production_model/
+          echo "✅ Modelo promovido a carpeta de producción"
+      
+      - name: 📤 Subir modelo promovido
+        uses: actions/upload-artifact@v4
+        with:
+          name: modelo-promocionado
+          path: production_model
