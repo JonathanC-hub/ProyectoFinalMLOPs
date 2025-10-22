@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/jcortesi/Documents/ProyectoFinalMLOPs/mlruns/330582651231838882/792e2d3e191c4b37aa19885b5e76c960/artifacts
+end_time: 1760974347063
+entry_point_name: ''
+experiment_id: '330582651231838882'
+lifecycle_stage: active
+run_id: 792e2d3e191c4b37aa19885b5e76c960
+run_name: invincible-loon-920
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760974313504
+status: 3
+tags: []
+user_id: jcortesi
