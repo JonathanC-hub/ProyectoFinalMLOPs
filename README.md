@@ -262,7 +262,7 @@ Archivo: `.github/workflows/mlflow-cd.yml`
 
 - ✅ Modelo entrenado y validado exitosamente en **GitHub Actions CI**.  
 - ✅ Artefactos subidos correctamente.  
-- ❌ El modelo no fue promovido a producción debido a no cumplir el umbral de R² ≥ 0.5.  
+- ❌ El modelo no fue promovido a producción debido a no cumplir el umbral de R² ≥ 0.4.  
 
 > Ejemplo de ejecución: [GitHub Actions CI](https://github.com/JonathanC-hub/ProyectoFinalMLOPs/actions)
 

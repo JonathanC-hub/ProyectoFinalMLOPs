@@ -23,7 +23,7 @@ jobs:
       - name: 📂 Descargar artefactos de MLflow desde CI
         uses: actions/download-artifact@v4
         with:
-          name: modelo-validado
+          name: mlflow-runs
           path: mlruns
 
       - name: 🔍 Verificar modelo descargado
@@ -36,8 +36,14 @@ jobs:
             exit 1
           fi
 
-      - name: 🟢 Promocionar modelo (simulado)
+      - name: 🚀 Promocionar modelo a producción (simulado)
         run: |
-          echo "✅ Promoción del modelo validado a producción"
-          # Opcional: servir modelo localmente
-          # mlflow models serve -m mlruns/<experiment_id>/<run_id>/model --port 5000
+          mkdir -p production_model
+          cp -r mlruns/* production_model/
+          echo "✅ Modelo promovido a carpeta de producción (simulada)"
+
+      - name: 📤 Subir modelo promovido como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: modelo-promocionado
+          path: production_model
